@@ -45,6 +45,7 @@ class Yt_requests:
     headers = {
         'Accept': 'application/json',
         'Authorization': f'Bearer {credentials.token}', }
+    base_url = 'https://www.googleapis.com/youtube/v3/'
 
     def playlist_list(self, channelid):
         '''method that returns a list of playlist for a certain channel id'''
@@ -54,12 +55,11 @@ class Yt_requests:
             'maxResults': 25,
             'channelId': channelid
         }
-        response = requests.get('https://www.googleapis.com/youtube/v3/playlists', params=params, headers=self.headers)
+        response = requests.get(url=self.base_url+'playlists', params=params, headers=self.headers)
         return response
 
     def playlist_create(self, title):
         '''method that creates a playlist'''
-        url = 'https://www.googleapis.com/youtube/v3/playlists'
         params = dict(
             part='snippet,status'
         )
@@ -73,7 +73,7 @@ class Yt_requests:
             )
         )
 
-        response = requests.post(url=url, params=params, headers=self.headers, json=payload)
+        response = requests.post(url=self.base_url+'playlists', params=params, headers=self.headers, json=payload)
         return response
 
     def playlist_edit(self, id, title, status):
@@ -93,7 +93,7 @@ class Yt_requests:
             }
         }
 
-        response = requests.put('https://www.googleapis.com/youtube/v3/playlists', params=params, json=payload,
+        response = requests.put(url=self.base_url+'playlists', params=params, json=payload,
                                 headers=self.headers)
         return response
 
@@ -104,14 +104,13 @@ class Yt_requests:
             'id': id
         }
 
-        response = requests.get('https://www.googleapis.com/youtube/v3/playlists', params=params, headers=self.headers)
+        response = requests.get(url=self.base_url+'playlists', params=params, headers=self.headers)
         return response
 
     def playlist_insert(self, playlistid, videoid):
         '''method that inserts videos in a playlist'''
         params = {
-            'part': 'snippet'
-            # 'id':'UCykImLEqjQ2HZAEerN9wzjw',
+            'part': 'snippet',
 
         }
 
@@ -126,7 +125,7 @@ class Yt_requests:
             }
         }
 
-        response = requests.post('https://www.googleapis.com/youtube/v3/playlistItems', params=params,
+        response = requests.post(url=self.base_url+'playlistItems', params=params,
                                  headers=self.headers,
                                  json=payload)
         return response
@@ -140,7 +139,7 @@ class Yt_requests:
             id=id
         )
 
-        response = requests.delete('https://www.googleapis.com/youtube/v3/playlistItems', params=params,
+        response = requests.delete(url=self.base_url+'playlistItems', params=params,
                                    headers=self.headers, json=payload)
         return response
 
@@ -157,7 +156,7 @@ class Yt_requests:
                 pageToken=next_page_token
             )
 
-            response = requests.get('https://www.googleapis.com/youtube/v3/playlistItems', params=params,
+            response = requests.get(url=self.base_url+'playlistItems', params=params,
                                     headers=self.headers)
             # for item in response.json()['items']:
             # results.append(item)
@@ -174,7 +173,7 @@ class Yt_requests:
             id=id
         )
 
-        response = requests.delete('https://www.googleapis.com/youtube/v3/playlists', params=params,
+        response = requests.delete(url=self.base_url+'playlists', params=params,
                                    headers=self.headers, json=payload)
         return response
 
@@ -193,7 +192,7 @@ class Yt_requests:
             maxResults=maxresults,
             q=keyword
         )
-        response = requests.get('https://www.googleapis.com/youtube/v3/search', params=params, headers=self.headers)
+        response = requests.get(url=self.base_url+'search', params=params, headers=self.headers)
         return response
 
     def top_three(self, playlist_id='UCykImLEqjQ2HZAEerN9wzjw'):
@@ -211,7 +210,7 @@ class Yt_requests:
                             'part': 'snippet, statistics',
                             'id': vids['snippet']['resourceId']['videoId']
                         }
-                        response = requests.get('https://www.googleapis.com/youtube/v3/videos', params=params,
+                        response = requests.get(url=self.base_url+'videos', params=params,
                                                 headers=self.headers).json()['items'][0]['statistics']['viewCount']
                         videos.append((int(response), vids['snippet']['resourceId']['videoId']))
 
@@ -223,7 +222,7 @@ class Yt_requests:
                         'id': vids['snippet']['resourceId']['videoId']
                     }
                     response = \
-                        requests.get('https://www.googleapis.com/youtube/v3/videos', params=params,
+                        requests.get(url=self.base_url+'videos', params=params,
                                      headers=self.headers).json()[
                             'items'][0]['statistics']['viewCount']
                     videos.append((int(response), vids['snippet']['resourceId']['videoId']))
